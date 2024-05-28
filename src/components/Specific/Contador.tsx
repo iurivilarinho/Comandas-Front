@@ -24,7 +24,7 @@ const Counter = ({
 
   const decrement = () => {
     setCount((prev) => {
-      const newCount = prev < 1 ? 0 : prev - 1;
+      const newCount = prev - 1;
       onClickMinus(newCount);
       return newCount;
     });
@@ -34,7 +34,8 @@ const Counter = ({
     <div className={`flex items-center gap-4 ${className}`}>
       <button
         onClick={decrement}
-        className="bg-green-800 hover:bg-green-900 text-white font-bold py-1 px-2 rounded w-6 h-6 md:h-8 md:w-8"
+        className="bg-green-800 hover:bg-green-900 text-white font-bold py-1 px-2 rounded w-6 h-6 md:h-8 md:w-8 disabled:bg-green-950"
+        disabled={count === 0}
       >
         -
       </button>

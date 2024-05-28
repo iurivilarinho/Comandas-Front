@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Button from "../Buttons/Buttons";
 import Counter from "../Specific/Contador";
+import { useTotal } from "../../context/totalContext";
 
 interface CardProps {
   image: string;
@@ -15,12 +16,10 @@ const Card = ({
   unitPriceProduct,
   onChangeTotal,
 }: CardProps) => {
-  const [total, setTotal] = useState(unitPriceProduct);
+  const [totalCard, setTotalCard] = useState(0);
 
-  useEffect(() => {
-    onChangeTotal(total);
-    console.log("Total dentro do card: ", total);
-  }, [total]);
+  const { setTotal, total } = useTotal();
+
 
   return (
     <div className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-4xl 2xl:max-w-4xl rounded-3xl overflow-hidden shadow-lg flex bg-white h-fit ">
@@ -33,13 +32,23 @@ const Card = ({
         </div>
         <div className="flex justify-between">
           <p className="text-gray-700 text-base">R${unitPriceProduct}/UN</p>
-          <p className="text-gray-700 flex justify-end text-3x">R${total}</p>
+          <p className="text-gray-700 flex justify-end text-3x">R${totalCard}</p>
         </div>
 
         <div className="mt-4">
           <Counter
-            onClickPlus={(count) => setTotal(count * unitPriceProduct)}
-            onClickMinus={(count) => setTotal(count * unitPriceProduct)}
+            onClickPlus={(count) => {
+              const newTotalCard = count * unitPriceProduct
+              setTotalCard(newTotalCard)
+              const newTotal = total + unitPriceProduct
+              setTotal(newTotal)
+            }}
+            onClickMinus={(count) => {
+              const newTotalCard = count * unitPriceProduct
+              setTotalCard(newTotalCard)
+              const newTotal = total - unitPriceProduct
+              setTotal(newTotal)
+            }}
           />
         </div>
       </div>
