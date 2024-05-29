@@ -1,29 +1,18 @@
-import { useEffect, useState } from "react";
-import Button from "../Buttons/Buttons";
+import { useState } from "react";
 import Counter from "../Specific/Contador";
 import { useTotal } from "../../context/totalContext";
 import { Produto } from "../../types/produto";
 import { Item } from "../../types/item";
 
 interface CardProps {
-  index: number;
   image: string;
   produto: Produto;
-  onTotalCardChange: (index: number, item: Item) => void;
+  onHandleClick: (count: number, produto: Produto) => void;
 }
 
-const Card = ({ index, image, produto, onTotalCardChange }: CardProps) => {
+const Card = ({ onHandleClick, image, produto }: CardProps) => {
   const [totalCard, setTotalCard] = useState(0);
 
-  const { setTotal, total } = useTotal();
-
-  const updateTotalCard = (total: number) => {
-    const newTotalCard: Item = {
-      produto: produto,
-      quantidade: total,
-    };
-    onTotalCardChange(index, newTotalCard); 
-  };
 
   return (
     <div className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-4xl 2xl:max-w-4xl rounded-3xl overflow-hidden shadow-lg flex bg-white h-fit ">
@@ -46,18 +35,17 @@ const Card = ({ index, image, produto, onTotalCardChange }: CardProps) => {
         <div className="mt-4">
           <Counter
             onClickPlus={(count) => {
-              const newTotalCard = count * (produto.valorUnitario ?? 0);
-              setTotalCard(newTotalCard);
-              const newTotal = total + (produto.valorUnitario ?? 0);
-              updateTotalCard(newTotal)
-              setTotal(newTotal);
+
+              onHandleClick(count, produto ?? 0)
+              setTotalCard(count * (produto.valorUnitario ?? 0))
+
             }}
+
             onClickMinus={(count) => {
-              const newTotalCard = count * (produto.valorUnitario ?? 0);
-              setTotalCard(newTotalCard);
-              const newTotal = total - (produto.valorUnitario ?? 0);
-              updateTotalCard(newTotal)
-              setTotal(newTotal);
+
+              onHandleClick(count, produto ?? 0)
+              setTotalCard(count * (produto.valorUnitario ?? 0))
+
             }}
           />
         </div>
