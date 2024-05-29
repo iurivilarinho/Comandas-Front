@@ -2,24 +2,28 @@ import { useEffect, useState } from "react";
 import Button from "../Buttons/Buttons";
 import Counter from "../Specific/Contador";
 import { useTotal } from "../../context/totalContext";
+import { Produto } from "../../types/produto";
+import { Item } from "../../types/item";
 
 interface CardProps {
+  index: number;
   image: string;
-  description: string;
-  unitPriceProduct: number;
-  onChangeTotal: (valorTotal: number) => void;
+  produto: Produto;
+  onTotalCardChange: (index: number, item: Item) => void;
 }
 
-const Card = ({
-  image,
-  description,
-  unitPriceProduct,
-  onChangeTotal,
-}: CardProps) => {
+const Card = ({ index, image, produto, onTotalCardChange }: CardProps) => {
   const [totalCard, setTotalCard] = useState(0);
 
   const { setTotal, total } = useTotal();
 
+  const updateTotalCard = (total: number) => {
+    const newTotalCard: Item = {
+      produto: produto,
+      quantidade: total,
+    };
+    onTotalCardChange(index, newTotalCard); 
+  };
 
   return (
     <div className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-4xl 2xl:max-w-4xl rounded-3xl overflow-hidden shadow-lg flex bg-white h-fit ">
@@ -28,26 +32,32 @@ const Card = ({
       </div>
       <div className="px-6 py-4 w-4/5 flex flex-col justify-between">
         <div>
-          <p className="text-gray-700 text-base">{description}</p>
+          <p className="text-gray-700 text-base">{produto.descricao}</p>
         </div>
         <div className="flex justify-between">
-          <p className="text-gray-700 text-base">R${unitPriceProduct}/UN</p>
-          <p className="text-gray-700 flex justify-end text-3x">R${totalCard}</p>
+          <p className="text-gray-700 text-base">
+            R${produto.valorUnitario}/UN
+          </p>
+          <p className="text-gray-700 flex justify-end text-3x">
+            R${totalCard}
+          </p>
         </div>
 
         <div className="mt-4">
           <Counter
             onClickPlus={(count) => {
-              const newTotalCard = count * unitPriceProduct
-              setTotalCard(newTotalCard)
-              const newTotal = total + unitPriceProduct
-              setTotal(newTotal)
+              const newTotalCard = count * (produto.valorUnitario ?? 0);
+              setTotalCard(newTotalCard);
+              const newTotal = total + (produto.valorUnitario ?? 0);
+              updateTotalCard(newTotal)
+              setTotal(newTotal);
             }}
             onClickMinus={(count) => {
-              const newTotalCard = count * unitPriceProduct
-              setTotalCard(newTotalCard)
-              const newTotal = total - unitPriceProduct
-              setTotal(newTotal)
+              const newTotalCard = count * (produto.valorUnitario ?? 0);
+              setTotalCard(newTotalCard);
+              const newTotal = total - (produto.valorUnitario ?? 0);
+              updateTotalCard(newTotal)
+              setTotal(newTotal);
             }}
           />
         </div>
